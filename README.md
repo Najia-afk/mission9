@@ -1,5 +1,12 @@
 # Mission 9 - Big Data Cloud with AWS EMR
 
+[![Python](https://img.shields.io/badge/Python-3.9-blue.svg)](https://www.python.org/)
+[![PySpark](https://img.shields.io/badge/PySpark-3.4-orange.svg)](https://spark.apache.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange.svg)](https://www.tensorflow.org/)
+[![AWS EMR](https://img.shields.io/badge/AWS_EMR-6.15-yellow.svg)](https://aws.amazon.com/emr/)
+[![Terraform](https://img.shields.io/badge/Terraform-1.5-purple.svg)](https://www.terraform.io/)
+[![Docker](https://img.shields.io/badge/Docker-24.0+-blue.svg)](https://www.docker.com/)
+
 Distributed image feature extraction pipeline using PySpark and TensorFlow on AWS EMR.
 
 ## 🏗️ Architecture
@@ -120,8 +127,18 @@ mission9/
 | **S3 Security** | Public access blocked |
 | **Network** | Only port 9443 (JupyterHub) exposed |
 
-## 📜 License
+## 📜 License & Credits
 
-- **Project**: MIT License
-- **Dataset**: Fruits-360 by Horea Muresan & Mihai Oltean (Public Domain)
-- **Model**: MobileNetV2 (Apache 2.0)
+### Dataset
+**Fruits-360** dataset by Horea Muresan & Mihai Oltean  
+Babeș-Bolyai University, Cluj-Napoca, Romania
+
+> Horea Muresan, Mihai Oltean, *Fruit recognition from images using deep learning*,  
+> Acta Univ. Sapientiae, Informatica Vol. 10, Issue 1, pp. 26-42, 2018.
+
+- 📄 Paper: [DOI: 10.2478/ausi-2018-0002](https://doi.org/10.2478/ausi-2018-0002)
+- 📦 Dataset: [Kaggle - Fruits-360](https://www.kaggle.com/datasets/moltean/fruits)
+- 🔗 GitHub: [Horea94/Fruit-Images-Dataset](https://github.com/Horea94/Fruit-Images-Dataset)
+
+### Pre-trained Model
+**MobileNetV2** - Google Inc. (Apache 2.0 License)
