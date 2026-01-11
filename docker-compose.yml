@@ -1,97 +1,33 @@
-# =============================================================================
-# Mission9 - Docker Compose Configuration
-# PySpark + PyTorch GPU + MLflow
-# Ports: 8889 (Jupyter), 4049 (Spark UI), 5009 (MLflow)
-# =============================================================================
-
 services:
-  # ===========================================================================
-  # Jupyter Notebook with PySpark + PyTorch GPU
-  # ===========================================================================
-  notebook:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: mission9_notebook
-    hostname: notebook
-    
-    # GPU Configuration for RTX 5070
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    
-    # Port mappings (mission9 specific to avoid conflicts)
+  jupyter:
+    build: .
+    container_name: m9
     ports:
-      - "8889:8888"   # Jupyter Lab
-      - "4049:4040"   # Spark UI
-    
-    # Volume mounts
+      - "8888:8888"
+      - "4040:4040"
     volumes:
-      - ./notebooks:/app/notebooks
-      - ./src:/app/src
-      - ./scripts:/app/scripts
-      - ./dataset:/app/dataset
-      - ./data:/app/data
-      - ./mlruns:/app/mlruns
-    
-    # Environment variables
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-      - SPARK_DRIVER_MEMORY=8g
-      - SPARK_EXECUTOR_MEMORY=8g
-      - PYTHONPATH=/app/src
-    
-    # Dependencies
-    depends_on:
-      - mlflow
-    
-    # Keep container running
-    stdin_open: true
-    tty: true
-    
-    # Network
-    networks:
-      - mission9_network
+      - .:/app
+    working_dir: /app/notebooks
+    command: jupyter lab --ip=0.0.0.0 --no-browser --allow-root --ServerApp.token='' --ServerApp.password=''
 
-  # ===========================================================================
-  # MLflow Tracking Server
-  # ===========================================================================
-  mlflow:
-    image: ghcr.io/mlflow/mlflow:v2.18.0
-    container_name: mission9_mlflow
-    hostname: mlflow
-    
-    # Port mapping
-    ports:
-      - "5009:5000"   # MLflow UI
-    
-    # Volume mounts
+  terraform:
+    image: hashicorp/terraform:1.6
     volumes:
-      - ./mlruns:/mlflow/mlruns
-      - ./data:/mlflow/artifacts
-    
-    # MLflow server command
-    command: >
-      mlflow server
-      --host 0.0.0.0
-      --port 5000
-      --backend-store-uri file:///mlflow/mlruns
-      --default-artifact-root file:///mlflow/artifacts
-    
-    # Network
-    networks:
-      - mission9_network
+      - ./infra:/infra
+      - ./keys:/keys
+    working_dir: /infra
+    env_file:
+      - .env
+    profiles:
+      - deploy
 
-# =============================================================================
-# Networks
-# =============================================================================
-networks:
-  mission9_network:
-    driver: bridge
-    name: mission9_network
+  aws:
+    image: amazon/aws-cli:2.15.0
+    volumes:
+      - .:/app
+      - ./keys:/keys
+    working_dir: /app
+    env_file:
+      - .env
+    profiles:
+      - deploy
