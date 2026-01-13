@@ -210,9 +210,10 @@ data "aws_subnets" "default" {
 
 # Security Group for EMR Master - Only JupyterHub (9443) public
 resource "aws_security_group" "emr_master" {
-  name        = "${var.project_name}-emr-master-v2"
-  description = "Security group for EMR master node"
-  vpc_id      = data.aws_vpc.default.id
+  name                   = "${var.project_name}-emr-master-v2"
+  description            = "Security group for EMR master node"
+  vpc_id                 = data.aws_vpc.default.id
+  revoke_rules_on_delete = true  # Auto-revoke rules on destroy to prevent dependency issues
 
   # JupyterHub - Port 9443 ONLY public port allowed by EMR
   ingress {
@@ -248,9 +249,10 @@ resource "aws_security_group" "emr_master" {
 
 # Security Group for EMR Slaves - Only internal traffic
 resource "aws_security_group" "emr_slave" {
-  name        = "${var.project_name}-emr-slave-v2"
-  description = "Security group for EMR slave nodes"
-  vpc_id      = data.aws_vpc.default.id
+  name                   = "${var.project_name}-emr-slave-v2"
+  description            = "Security group for EMR slave nodes"
+  vpc_id                 = data.aws_vpc.default.id
+  revoke_rules_on_delete = true  # Auto-revoke rules on destroy to prevent dependency issues
 
   # All traffic from master and other slaves
   ingress {
